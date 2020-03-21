@@ -1,5 +1,5 @@
 from typing import List
-
+from datetime import datetime
 import pandas as pd
 
 CONFIRMED_CASES_URL = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data" \
@@ -29,7 +29,9 @@ def poland_cases_by_date(day: int, month: int, year: int = 2020) -> int:
     """
     
     # Your code goes here (remove pass)
-    pass
+    dzis=datetime.date(year,month,day)
+    new=dzis.strftime("%m/%d/%y").lstrip("0")
+    return df.loc[df["Country/Region"]=="Poland"][new].values[0]
 
 
 def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
@@ -49,7 +51,12 @@ def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     """
 
     # Your code goes here (remove pass)
-    pass
+    dzis = datetime.date(year, month, day)
+    today = dzis.strftime("%m/%d/%y").lstrip("0")
+    new=df.sort_values(by=today,ascending=True).tail(5)
+
+    list=new["Country/Region"].tolist()
+    return list[::-1]
 
 # Function name is wrong, read the pydoc
 def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
@@ -70,4 +77,8 @@ def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
     """
     
     # Your code goes here (remove pass)
-    pass
+    dzis = datetime.date(year, month, day)
+    today = dzis.strftime("%m/%d/%y").lstrip("0")
+    wczoraj = dzis - datetime.timedelta(days=1)
+    yesterday = wczoraj.strftime("%m/%d/%y").lstrip("0")
+    return df.loc[df[today]==df[yesterday]].index.size
